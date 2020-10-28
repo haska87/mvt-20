@@ -59,4 +59,40 @@ ax2.scatter(x,y2)
 plt.show()
 
 #4
-pd.read_csv('yakutsk_2019.csv')
+
+plt.style.use('seaborn')
+
+data = pd.read_csv("yakutsk_2019.csv", delimiter=";", encoding='cp1251', header = 0)
+
+average_temp = []
+month = 12
+summ = 0.0
+count = 0
+time = data[["Date","Temp"]]
+#date = list(time.keys())
+#temp = data["Temp"].to_dict()
+for _,row in time.iterrows():
+    newMonth = int(row["Date"][3:5])
+    if newMonth == month:
+        summ += float(row["Temp"])
+        count +=1
+    else:
+        month = newMonth
+        average_temp.append(summ/count)
+        summ = float(row["Temp"])
+        count = 1
+average_temp.append(summ/count)
+
+average_temp.reverse()
+
+months = ["Январь", "Февраль", "Март", "Апрель", "Май", "Июнь", "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь"]
+
+plt.barh(months, average_temp)
+plt.title("Среднемесячная температура в Якутске")
+plt.xlabel("Температура")
+plt.ylabel("Месяц")
+
+plt.tight_layout()
+plt.savefig("graph.png")
+
+plt.show()
